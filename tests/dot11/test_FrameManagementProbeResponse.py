@@ -22,55 +22,36 @@ class TestDot11ManagementProbeResponseFrames(unittest.TestCase):
         self.radiotap_decoder = RadioTapDecoder()
         radiotap=self.radiotap_decoder.decode(self.rawProbeResponseframe)
 
+        self.dot11 = radiotap.child()
+        self.management_base = self.dot11.child()
+        self.management_probe_request = self.management_base.child()
+
         if PY2:
             self.assertEqual(str(radiotap.__class__), "impacket.dot11.RadioTap")
         else:
             self.assertEqual(str(radiotap.__class__), "<class 'impacket.dot11.RadioTap'>")
 
         self.dot11=radiotap.child()
-        if PY2:
-            self.assertEqual(str(self.dot11.__class__), "impacket.dot11.Dot11")
-        else:
-            self.assertEqual(str(self.dot11.__class__), "<class 'impacket.dot11.Dot11'>")
-
-        type = self.dot11.get_type()
-        self.assertEqual(type,Dot11Types.DOT11_TYPE_MANAGEMENT)
-        
-        subtype = self.dot11.get_subtype()
-        self.assertEqual(subtype,Dot11Types.DOT11_SUBTYPE_MANAGEMENT_PROBE_RESPONSE)
-        
-        typesubtype = self.dot11.get_type_n_subtype()
-        self.assertEqual(typesubtype,Dot11Types.DOT11_TYPE_MANAGEMENT_SUBTYPE_PROBE_RESPONSE)
-        
         self.management_base=self.dot11.child()
-        if PY2:
-            self.assertEqual(str(self.management_base.__class__), "impacket.dot11.Dot11ManagementFrame")
-        else:
-            self.assertEqual(str(self.management_base.__class__), "<class 'impacket.dot11.Dot11ManagementFrame'>")
-        
         self.management_probe_response=self.management_base.child()
-        if PY2:
-            self.assertEqual(str(self.management_probe_response.__class__), "impacket.dot11.Dot11ManagementProbeResponse")
-        else:
-            self.assertEqual(str(self.management_probe_response.__class__), "<class 'impacket.dot11.Dot11ManagementProbeResponse'>")
 
     def test_setups(self):
-        radiotap=self.radiotap_decoder.decode(self.rawframe)
+        radiotap=self.radiotap_decoder.decode(self.rawProbeResponseframe)
 
         if PY2:
             self.assertEqual(str(radiotap.__class__), "impacket.dot11.RadioTap")
             self.assertEqual(str(self.dot11.__class__), "impacket.dot11.Dot11")
             self.assertEqual(str(self.management_base.__class__), "impacket.dot11.Dot11ManagementFrame")
-            self.assertEqual(str(self.management_authentication.__class__), "impacket.dot11.Dot11ManagementProbeResponse")
+            self.assertEqual(str(self.management_probe_response.__class__), "impacket.dot11.Dot11ManagementProbeResponse")
         else:
             self.assertEqual(str(radiotap.__class__), "<class 'impacket.dot11.RadioTap'>")
             self.assertEqual(str(self.dot11.__class__), "<class 'impacket.dot11.Dot11'>")
             self.assertEqual(str(self.management_base.__class__), "<class 'impacket.dot11.Dot11ManagementFrame'>")
-            self.assertEqual(str(self.management_authentication.__class__), "<class 'impacket.dot11.Dot11ManagementProbeResponse'>")
+            self.assertEqual(str(self.management_probe_response.__class__), "<class 'impacket.dot11.Dot11ManagementProbeResponse'>")
 
         self.assertEqual(self.dot11.get_type(), Dot11Types.DOT11_TYPE_MANAGEMENT)
-        self.assertEqual(self.dot11.get_subtype(), Dot11Types.DOT11_SUBTYPE_MANAGEMENT_AUTHENTICATION)
-        self.assertEqual(self.dot11.get_type_n_subtype(), Dot11Types.DOT11_TYPE_MANAGEMENT_SUBTYPE_AUTHENTICATION)
+        self.assertEqual(self.dot11.get_subtype(), Dot11Types.DOT11_SUBTYPE_MANAGEMENT_PROBE_RESPONSE)
+        self.assertEqual(self.dot11.get_type_n_subtype(), Dot11Types.DOT11_TYPE_MANAGEMENT_SUBTYPE_PROBE_RESPONSE)
         
     def test_01(self):
         'Test Header and Tail Size field'
